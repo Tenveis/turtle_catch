@@ -27,8 +27,13 @@ add_executable(turtle_spawn_node nodes/turtle_spawn_node.cpp src/turtle_spawn.cp
 ament_target_dependencies(turtle_spawn_node rclcpp turtlesim)
 
 install(TARGETS
-turtle_spawn_node
-DESTINATION lib/${PROJECT_NAME}
+  turtle_spawn_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
