@@ -1,6 +1,7 @@
 #include "turtle_catch/turtle_spawn.h"
 
-TurtleSpawn::TurtleSpawn() : Node("turtle_spawn_cpp")
+TurtleSpawn::TurtleSpawn()
+    : Node("turtle_spawn_cpp"), count_(1)
 {
     init_all();
     RCLCPP_INFO(this->get_logger(),
@@ -9,6 +10,14 @@ TurtleSpawn::TurtleSpawn() : Node("turtle_spawn_cpp")
     /*--------------test-----------------*/
     spawn_turtle_thread_ = std::thread(
         std::bind(&TurtleSpawn::spawn_turtle_timer_callback, this));
+
+    /*--------------test-2-----------------*/
+    for (int i = 0; i < 20; i++)
+    {
+        thread_.push_back(
+            std::thread(
+                std::bind(&TurtleSpawn::spawn_turtle_timer_callback, this)));
+    }
 }
 
 void TurtleSpawn::init_all()
@@ -50,10 +59,11 @@ void TurtleSpawn::call_spawn_turtle_service(float x, float y, float theta, std::
 
 void TurtleSpawn::spawn_turtle_timer_callback()
 {
-    std::string name = "turtle2";
-    float x = 7.7;
-    float y = 3.3;
-    float theta = 0.0;
+    count_++;
+    std::string name = "turtle" + std::to_string(count_);
+    float x = 1.1 + (2 * count_ / 10);
+    float y = 3.3 + (2 * count_ / 10);
+    float theta = 0.0 + (10 * count_);
 
     call_spawn_turtle_service(x, y, theta, name);
 }

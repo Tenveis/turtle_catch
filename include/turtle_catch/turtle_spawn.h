@@ -12,6 +12,8 @@ public:
 
 private:
     std::thread spawn_turtle_thread_;
+    std::vector<std::thread> thread_;
+ int count_;
 
     rclcpp::Client<turtlesim::srv::Spawn>::SharedPtr spawn_turtle_client_;
 
