@@ -18,9 +18,19 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rclpy REQUIRED)
 find_package(turtlesim REQUIRED)
 
+set(msg_files
+"msg/Turtle.msg"
+"msg/TurtleArray.msg")
+
+# Generate relevant files of custom interface
+rosidl_generate_interfaces(${PROJECT_NAME}
+${msg_files}
+)
+
+
+#include '.h' files
 include_directories(include)
 
 add_executable(turtle_spawn_node nodes/turtle_spawn_node.cpp src/turtle_spawn.cpp)
@@ -36,4 +46,6 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}
 )
 
+
+ament_export_dependencies(rosidl_default_runtime)
 ament_package()
