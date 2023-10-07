@@ -14,30 +14,15 @@ TurtleSpawn::TurtleSpawn()
     RCLCPP_INFO(this->get_logger(),
                 "object of TurtleSpawn class has been created.");
 
-    /*--------------test-1-----------------*/
-    /*
-    spawn_turtle_thread_ = std::thread(
-        std::bind(&TurtleSpawn::spawn_turtle_callback, this));
-    */
-
-    /*--------------test-2-----------------*/
-    /*
-    for (int i = 0; i < 5; i++)
-    {
-        spawn_turtle_vec_thread_.push_back(
-            std::thread(
-                std::bind(&TurtleSpawn::spawn_turtle_callback, this)));
-        rclcpp::sleep_for(std::chrono::milliseconds(1000));
-    }
-    */
 }
 
 void TurtleSpawn::init_all()
 {
     spawn_turtle_client_ = this->create_client<turtlesim::srv::Spawn>(
         "spawn");
-    vector_thread_timer_ = this->create_wall_timer(std::chrono::milliseconds(1000),
-                                                   std::bind(&TurtleSpawn::vector_thread_timer_callback, this));
+    spawn_turtle_timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(1000),
+        std::bind(&TurtleSpawn::spawn_turtle_timer_callback, this));
 }
 
 void TurtleSpawn::call_spawn_turtle_service(float x, float y, float theta, std::string name)
@@ -71,7 +56,7 @@ void TurtleSpawn::call_spawn_turtle_service(float x, float y, float theta, std::
     }
 }
 
-void TurtleSpawn::spawn_turtle_callback()
+void TurtleSpawn::spawn_turtle_timer_callback()
 {
     count_++;
 
@@ -80,12 +65,7 @@ void TurtleSpawn::spawn_turtle_callback()
     double theta = random_angle_(generator_);
     std::string name = "turtle" + std::to_string(count_);
 
-    call_spawn_turtle_service(x, y, theta, name);
-}
-
-void TurtleSpawn::vector_thread_timer_callback()
-{
     spawn_turtle_vec_thread_.push_back(
         std::thread(
-            std::bind(&TurtleSpawn::spawn_turtle_callback, this)));
+            std::bind(&TurtleSpawn::call_spawn_turtle_service, this, x, y, theta, name)));
 }

@@ -28,12 +28,11 @@ private:
     int count_;
 
     rclcpp::Client<turtlesim::srv::Spawn>::SharedPtr spawn_turtle_client_;
-    rclcpp::TimerBase::SharedPtr vector_thread_timer_;
+    rclcpp::TimerBase::SharedPtr spawn_turtle_timer_;
     void init_all();
     void call_spawn_turtle_service(float x, float y, float theta, std::string name);
 
-    void spawn_turtle_callback();
-    void vector_thread_timer_callback();
+    void spawn_turtle_timer_callback();
 };
 
 #endif
