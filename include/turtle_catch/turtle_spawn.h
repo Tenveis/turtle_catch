@@ -6,8 +6,13 @@
 #include <rclcpp/rclcpp.hpp>
 #include <turtlesim/srv/spawn.hpp>
 
+//custom lib
+#include "turtle_catch/msg/turtle.hpp"
+#include "turtle_catch/msg/turtle_array.hpp"
+
 // standard lib
 #include <random>
+#include <list>
 
 class TurtleSpawn : public rclcpp::Node
 {
@@ -23,15 +28,18 @@ private:
     std::uniform_real_distribution<double> random_angle_; 
 
 private:
-    std::thread spawn_turtle_thread_;
     std::vector<std::thread> spawn_turtle_vec_thread_;
-    int count_;
+    int turtle_count_;
+
+    std::list<turtle_catch::msg::Turtle> alive_turtles_;
 
     rclcpp::Client<turtlesim::srv::Spawn>::SharedPtr spawn_turtle_client_;
+    rclcpp::Publisher<turtle_catch::msg::TurtleArray>::SharedPtr alive_turtles_pub_;
     rclcpp::TimerBase::SharedPtr spawn_turtle_timer_;
-    void init_all();
-    void call_spawn_turtle_service(float x, float y, float theta, std::string name);
 
+    void init_all();
+    void call_spawn_turtle_service(double x, double y, double theta, std::string name);
+    void publish_alive_turtles();
     void spawn_turtle_timer_callback();
 };
 
