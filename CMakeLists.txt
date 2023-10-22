@@ -26,9 +26,14 @@ set(msg_files
   "msg/TurtleArray.msg"
 )
 
+set(srv_files
+  "srv/CatchTurtle.srv"
+)
+
 # Generate relevant files of custom interface
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${msg_files}
+  ${srv_files}
 )
 
 ament_python_install_package(${PROJECT_NAME})

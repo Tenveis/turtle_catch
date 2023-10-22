@@ -20,6 +20,9 @@ void TurtleSpawn::init_all()
     spawn_turtle_client_ = this->create_client<turtlesim::srv::Spawn>(
         "spawn");
     alive_turtles_pub_ = this->create_publisher<turtle_catch::msg::TurtleArray>("alive_turtles", 100);
+    catch_turtle_server_ = this->create_service<turtle_catch::srv::CatchTurtle>(
+        "catch_turtle",
+        std::bind(&TurtleSpawn::catch_turtle_serverCallbacK, this, std::placeholders::_1, std::placeholders::_2));
     spawn_turtle_timer_ = this->create_wall_timer(
         std::chrono::milliseconds(1000),
         std::bind(&TurtleSpawn::spawn_turtle_timer_callback, this));
@@ -73,6 +76,66 @@ void TurtleSpawn::publish_alive_turtles()
         msg.turtles.push_back(turtle);
     }
     alive_turtles_pub_->publish(msg);
+}
+
+void TurtleSpawn::catch_turtle_serverCallbacK(const turtle_catch::srv::CatchTurtle::Request::SharedPtr req,
+                                              const turtle_catch::srv::CatchTurtle::Response::SharedPtr res)
+
+{
+    kill_turtle_vec_thread_.push_back(
+        std::thread(
+            std::bind(
+                &TurtleSpawn::call_turteKillService, this, req->name)));
+
+    res->success = true;
+}
+
+void TurtleSpawn::call_turteKillService(std::string name)
+{
+    rclcpp::Client<turtlesim::srv::Kill>::SharedPtr client;
+    client = this->create_client<turtlesim::srv::Kill>("kill");
+
+    while (!client->wait_for_service(std::chrono::seconds(1)))
+    {
+        RCLCPP_WARN(this->get_logger(), "waiting for service server: /kill");
+    }
+    auto req = std::make_shared<turtlesim::srv::Kill::Request>();
+    req->name = name;
+
+    auto future = client->async_send_request(req);
+    try
+    {
+        auto response = future.get();
+        for (auto turtle : alive_turtles_)
+        {
+            try
+            {
+                if (name == turtle.name)
+                {
+                    alive_turtles_.remove(turtle);
+                    publish_alive_turtles();
+                }
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+
+                RCLCPP_ERROR_STREAM(
+                    this->get_logger(),
+                    "Failed to remove...\n"
+                        << "ERROR: " << e.what());
+            }
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+
+        RCLCPP_ERROR_STREAM(
+            this->get_logger(),
+            " Service call failed.\n"
+                << "ERROR: " << e.what());
+    }
 }
 
 void TurtleSpawn::spawn_turtle_timer_callback()

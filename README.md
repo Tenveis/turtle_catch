@@ -55,3 +55,9 @@ sudo apt-get install ros-foxy-turtlesim
 
 ### Control turtle is traversing to spawned turtle's pose.  
 ![goal-4](./status_data/t5.gif) 
+
+### Catched turetle is removed. 
+![goal-4](./status_data/t6.gif) 
+
+### catch nearby turtle. 
+![goal-4](./status_data/t7.gif) 
