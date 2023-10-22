@@ -31,6 +31,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   ${msg_files}
 )
 
+ament_python_install_package(${PROJECT_NAME})
 
 #include '.h' files
 include_directories(include)
@@ -47,8 +48,16 @@ rosidl_target_interfaces(turtle_spawn_node ${PROJECT_NAME} "rosidl_typesupport_c
 # rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
 # target_link_libraries(turtle_spawn_node "${cpp_typesupport_target}") 
 
+
+
 install(TARGETS
   turtle_spawn_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install Python executables
+install(PROGRAMS
+  nodes/turtle_control_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -56,7 +65,6 @@ install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}
 )
-
 
 ament_export_dependencies(rosidl_default_runtime)
 ament_package()

@@ -36,3 +36,19 @@ sudo apt-get install ros-foxy-turtlesim
 - Node 2: 
     * It shall send(publish) appropriate _velocity commands_ for the **`control-turtle`** and will try to reach the nearest-turtle. 
     * Once the control-turtle reaches the nearest-turtle's position, nearest-turtle should be removed.
+
+
+
+## Project Status
+
+### Turtle has been spawned at desired position.  
+![goal-](./status_data/t1.gif) 
+
+### Multiple turtles are spawning at given position.   
+![goal-2](./status_data/t2.gif) 
+
+### Turtles are spawning at random position.  
+![goal-3](./status_data/t3.gif) 
+
+### Control turtle is able to traverse to random pose.  
+![goal-4](./status_data/t4.gif) 
