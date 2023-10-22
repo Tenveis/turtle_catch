@@ -52,3 +52,6 @@ sudo apt-get install ros-foxy-turtlesim
 
 ### Control turtle is able to traverse to random pose.  
 ![goal-4](./status_data/t4.gif) 
+
+### Control turtle is traversing to spawned turtle's pose.  
+![goal-4](./status_data/t5.gif) 

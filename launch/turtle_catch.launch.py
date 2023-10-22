@@ -9,8 +9,11 @@ def generate_launch_description():
 
     turtlesim = Node(package="turtlesim", executable="turtlesim_node")
     turtle_spawn = Node(package="turtle_catch", executable="turtle_spawn_node")
+    turtle_control = Node(package="turtle_catch", executable="turtle_control_node.py")
+
 
     ld.add_action(turtlesim)
     ld.add_action(turtle_spawn)
+    ld.add_action(turtle_control)
 
     return ld
